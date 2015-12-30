@@ -55,3 +55,12 @@ docs/_build/
 
 # PyBuilder
 target/
+
+instance/
+.idea/
+*.py[cod]
+app/assets/lib
+app/assets/cache
+app/static/css/*
+app/static/js/*
+alembic.ini
