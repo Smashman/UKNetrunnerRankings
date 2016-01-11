@@ -20,3 +20,17 @@ class Faction(db.Model):
 class Side(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+
+
+class Pack(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
+    code = db.Column(db.String(16), nullable=False)
+    num_in_cylce = db.Column(db.Integer)
+    name = db.Column(db.String(128), nullable=False)
+
+
+class Cycle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(16), nullable=False)
+    name = db.Column(db.String(128), nullable=False)

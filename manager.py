@@ -13,5 +13,11 @@ from flask.ext.script import Manager
 
 manager = Manager(app)
 
+
+@manager.command
+def update_packs():
+    from app.scripts.scripts import update_packs
+    update_packs()
+
 if __name__ == "__main__":
     manager.run()
