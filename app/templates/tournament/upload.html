@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+    <form method=POST enctype=multipart/form-data class="upload-form">
+        <div id="file-picker">
+            <span>Upload a <code>.json</code> from NRTM, or the non-formatted <code>.txt</code> from NRT. </span>
+            <input type=file name=tournament_export>
+        </div>
+        <input class="input-default" type="submit" value="Upload">
+    </form>
+{% endblock %}

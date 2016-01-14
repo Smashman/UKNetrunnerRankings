@@ -1,4 +1,6 @@
 from app import db
+from ..tournament.models import Participant
+from sqlalchemy import or_
 
 
 class Identity(db.Model):
@@ -7,6 +9,9 @@ class Identity(db.Model):
     name = db.Column(db.String(256), nullable=False)
 
     faction = db.relationship('Faction', backref='identity')
+    # participants = db.relationship('Participant', foreign_keys='Participant.runner_ident_id')
+    participants = db.relationship('Participant', primaryjoin=or_(Participant.runner_ident_id == id,
+                                                                  Participant.corp_ident_id == id)) # Thanks agronholm!
 
 
 class Faction(db.Model):

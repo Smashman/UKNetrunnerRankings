@@ -1,5 +1,6 @@
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.uploads import UploadSet, configure_uploads
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('settings')
@@ -12,6 +13,11 @@ if app.debug:
 
 # Flask extensions
 db = SQLAlchemy(app)
+
+# Flask uploads
+tournament_exports = UploadSet('tournamentExports', ('json', 'txt'))
+
+configure_uploads(app, [tournament_exports])
 
 # Views
 import views
