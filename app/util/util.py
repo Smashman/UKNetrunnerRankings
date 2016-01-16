@@ -14,7 +14,8 @@ def process_json_tournament(tournament_record):
     data = json.load(f)
     f.close()
 
-    participants = sorted(data.get('players'), key=lambda x: (-x.get('matchPoints'), -x.get('strengthOfSchedule'), -x.get('extendedStrengthOfSchedule')))
+    participants = sorted(data.get('players'), key=lambda x: (-x.get('matchPoints'), -x.get('strengthOfSchedule'),
+                                                              -x.get('extendedStrengthOfSchedule')))
 
     position = 1
     for participant in participants:
@@ -27,8 +28,10 @@ def process_json_tournament(tournament_record):
         print 'SoS:        {}'.format(participant.get('strengthOfSchedule'))
         print 'xSoS:       {}'.format(participant.get('extendedStrengthOfSchedule'))
         print ''
-        participant_record.corp_ident = Identity.query.get(1)
-        participant_record.runner_ident = Identity.query.get(2)
+        participant_record.corp_ident = Identity.query.filter(Identity.name.like('%{}%'.format(
+            participant.get('corpIdentity')))).first()
+        participant_record.runner_ident = Identity.query.filter(Identity.name.like('%{}%'.format(
+            participant.get('runnerIdentity')))).first()
 
         result_record = Result()
 
@@ -44,4 +47,24 @@ def process_json_tournament(tournament_record):
 
 
 def process_txt_tournament(tournament_record):
-    pass
+    f = open(tournament_exports.path(tournament_record.filename), 'r')
+    for idx, line in enumerate(f):
+        if idx == 0:
+            continue  # Ignore Header line
+        player_info = line.strip().split(';')
+        print 'Position:   {}'.format(player_info[0])
+        print 'Name:       {}'.format(player_info[1])
+        names = player_info[1].split('\'')
+        print 'First name: {}'.format(names[0].strip())
+        print 'Last name:  {}'.format(names[2].strip() if 2 < len(names) else None)
+        print 'Nickname:   {}'.format(names[1].strip())
+        print 'Corp ID:    {}'.format(player_info[3])
+        print 'Runner ID:  {}'.format(player_info[5])
+        print 'Points:     {}'.format(player_info[7])
+        print 'SoS:        {}'.format(player_info[8])
+        wdl = player_info[10].strip().split('-')
+        print 'Wins:       {}'.format(wdl[0])
+        print 'Draws:      {}'.format(wdl[1])
+        print 'Losses:     {}'.format(wdl[2])
+        print ''
+    f.close()
