@@ -2,6 +2,7 @@ import json
 from app import tournament_exports
 from ..tournament.models import Participant, Result
 from ..netrunner.models import Identity
+from ..user.models import User
 
 
 def process_tournament(tournament_record):
@@ -28,6 +29,13 @@ def process_json_tournament(tournament_record):
         print 'SoS:        {}'.format(participant.get('strengthOfSchedule'))
         print 'xSoS:       {}'.format(participant.get('extendedStrengthOfSchedule'))
         print ''
+
+        user = User()
+
+        user.nickname = participant.get('name')
+
+        participant_record.user = user
+
         participant_record.corp_ident = Identity.query.filter(Identity.name.like('%{}%'.format(
             participant.get('corpIdentity')))).first()
         participant_record.runner_ident = Identity.query.filter(Identity.name.like('%{}%'.format(
@@ -67,4 +75,36 @@ def process_txt_tournament(tournament_record):
         print 'Draws:      {}'.format(wdl[1])
         print 'Losses:     {}'.format(wdl[2])
         print ''
+
+        participant_record = Participant()
+
+        user = User()
+
+        names = player_info[1].split('\'')
+        user.first_name = names[0].strip() or None
+        user.last_name = (names[2].strip() if 2 < len(names) else None) or None
+        user.nickname = names[1].strip()
+
+        participant_record.user = user
+
+        corp_ident = player_info[3]
+        runner_ident = player_info[5]
+
+        if corp_ident:
+            participant_record.corp_ident = Identity.query.filter(Identity.name.like('%{}%'.format(
+                corp_ident))).first()
+        if runner_ident:
+            participant_record.runner_ident = Identity.query.filter(Identity.name.like('%{}%'.format(
+                runner_ident))).first()
+
+        result_record = Result()
+
+        result_record.position = player_info[0]
+        result_record.points = player_info[7]
+        result_record.strength_of_schedule = player_info[8]
+
+        participant_record.result.append(result_record)
+
+        tournament_record.participants.append(participant_record)
+
     f.close()

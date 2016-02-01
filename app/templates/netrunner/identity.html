@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div>{{ identity.name }}</div>
+    <div>Played by {{ identity.participants | length }} participants in all tournaments</div>
+    {% if identity.participants|length > 0 %}
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Tournament</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in identity.participants %}
+            <tr>
+                <td>{{ participant.user_id }}</td>
+                <td><a href="{{ url_for('tournament.view_tournament', tournament_id=participant.tournament_id) }}">Tournament</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+{% endblock %}

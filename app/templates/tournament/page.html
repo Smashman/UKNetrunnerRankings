@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+    <table>
+    <thead>
+        <tr>
+            <th>Position</th>
+            <th>Name</th>
+            <th>Points</th>
+            <th>Corp Identity</th>
+            <th>Runner Identity</th>
+            <th>Strength of Schedule</th>
+            {% if tournament.file_type == 'json' %}
+            <th>Extended Strength of Schedule</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for participant in tournament.participants %}
+        {% set result = participant.result[0] %}
+        <tr>
+            <th>{{ result.position }}</th>
+            <td>{{ participant.user | name_format }}</td>
+            <td>{{ result.points }}</td>
+            <td>
+                {% if participant.corp_ident %}
+                <a href="{{ url_for('netrunner.ident_page', identity_id=participant.corp_ident.id) }}">{{ participant.corp_ident.name }}</a>
+                {% else %}
+                    Unknown
+                {% endif %}
+            </td>
+            <td>
+                {% if participant.runner_ident %}
+                    <a href="{{ url_for('netrunner.ident_page', identity_id=participant.runner_ident.id) }}">{{ participant.runner_ident.name }}</a>
+                {% else %}
+                    Unknown
+                {% endif %}
+            </td>
+            <td>{{ result.strength_of_schedule }}</td>
+            {% if tournament.file_type == 'json' %}
+            <td>{{ result.extended_sos }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}

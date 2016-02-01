@@ -26,8 +26,15 @@ import views
 from .user.views import user_bp as user_blueprint
 app.register_blueprint(user_blueprint)
 
-from .tournament.views import tournament as tournament_blueprint
+from .tournament.views import tournament_bp as tournament_blueprint
 app.register_blueprint(tournament_blueprint)
+
+from .netrunner.views import nr_bp as nr_blueprint
+app.register_blueprint(nr_blueprint)
 
 # Netrunner
 from .netrunner.models import Identity, Faction, Side
+
+# Jinja2 Filters
+from filters import name_format
+app.add_template_filter(name_format)
