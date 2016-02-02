@@ -5,12 +5,12 @@ from sqlalchemy import or_
 
 class Identity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(16), nullable=False)
     faction_id = db.Column(db.Integer, db.ForeignKey('faction.id'))
     name = db.Column(db.String(256), nullable=False)
-    image_url = db.Column(db.String(256), nullable=False)
+    image_url = db.Column(db.String(256))
 
     faction = db.relationship('Faction', backref='identity')
-    # participants = db.relationship('Participant', foreign_keys='Participant.runner_ident_id')
     participants = db.relationship('Participant', primaryjoin=or_(Participant.runner_ident_id == id,
                                                                   Participant.corp_ident_id == id)) # Thanks agronholm!
 
