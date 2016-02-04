@@ -45,13 +45,16 @@ def update_ids():
     for ident in identities:
         if ident.get('faction_code') == 'neutral' or ident.get('set_code') == 'draft':
             continue
-        ident_record = Identity()
-        ident_record.name = ident.get('title')
-        ident_record.image_url = 'http://netrunnerdb.com{}'.format(ident.get('imagesrc'))
-        ident_record.faction = Faction.query.filter_by(code=ident.get('faction_code')).first()
-        inserted_ids += 1
-        db.session.add(ident_record)
-    print '{} new packs inserted.'.format(inserted_ids)
+        if Identity.query.filter_by(code=ident.get('code')).first() is None:
+            ident_record = Identity()
+            ident_record.code = ident.get('code')
+            ident_record.name = ident.get('title')
+            if ident.get('imagesrc'):
+                ident_record.image_url = 'http://netrunnerdb.com{}'.format(ident.get('imagesrc'))
+            ident_record.faction = Faction.query.filter_by(code=ident.get('faction_code')).first()
+            inserted_ids += 1
+            db.session.add(ident_record)
+    print '{} new identities inserted.'.format(inserted_ids)
     db.session.commit()
 
 
